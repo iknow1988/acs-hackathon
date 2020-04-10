@@ -1,4 +1,4 @@
-# acs-hackathon
+# acs-flattenthecurvehack-hackathon
 
 ## AI enabled Social Distance Monitoring and Notification System
 

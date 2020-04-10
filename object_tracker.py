@@ -11,6 +11,15 @@ import argparse
 import imutils
 import time
 import cv2
+import pika
+
+connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+channel = connection.channel()
+channel.queue_declare(queue='hello')
+close = False
+
+def alert():
+	beep(sound=1)
 
 def midpoint(ptA, ptB):
 	return ((ptA[0] + ptB[0]) * 0.5, (ptA[1] + ptB[1]) * 0.5)
@@ -102,20 +111,27 @@ while True:
 						if D < 200.0:
 							cv2.line(frame, (object_1[0], object_1[1]), (object_2[0], object_2[1]), (139,0,0),
 									 thickness=1, lineType=8)
-							cv2.putText(frame, "{:.1f}in".format(D), (int(mX), int(mY - 10)),
+							cv2.putText(frame, "{:.1f}".format(D), (int(mX), int(mY - 10)),
 										cv2.FONT_HERSHEY_SIMPLEX, 0.55, (139,0,0), 2)
-							#beep(sound=1)
+							close = True
+							body_str = str(key_1) + "," + str(key_2)
+							channel.basic_publish(exchange='',
+												  routing_key='hello',
+												  body = body_str)
+							# print(" [x] Sent 'Hello World!'")
 						else:
 							cv2.line(frame, (object_1[0], object_1[1]), (object_2[0], object_2[1]), (0, 255, 0),
 									 thickness=1, lineType=8)
-							cv2.putText(frame, "{:.1f}in".format(D), (int(mX), int(mY - 10)),
+							cv2.putText(frame, "{:.1f}".format(D), (int(mX), int(mY - 10)),
 										cv2.FONT_HERSHEY_SIMPLEX, 0.55, (240, 0, 159), 2)
+							close = False
 					else:
 						break
-
+	# if close:
+	# 	alert()
 	people_count = len(objects)
 	height, width, channels = frame.shape
-	print(height, width, people_count)
+	# print(height, width, people_count)
 	# show the output frame
 	cv2.imshow("Frame", frame)
 	key = cv2.waitKey(1) & 0xFF
@@ -127,3 +143,4 @@ while True:
 # do a bit of cleanup
 cv2.destroyAllWindows()
 vs.stop()
+connection.close()

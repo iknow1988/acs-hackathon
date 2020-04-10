@@ -5,6 +5,7 @@
 from pyimagesearch.centroidtracker import CentroidTracker
 from scipy.spatial import distance as dist
 from imutils.video import VideoStream
+from beepy import beep
 import numpy as np
 import argparse
 import imutils
@@ -35,12 +36,13 @@ net = cv2.dnn.readNetFromCaffe(args["prototxt"], args["model"])
 # initialize the video stream and allow the camera sensor to warmup
 print("[INFO] starting video stream...")
 vs = VideoStream(src=0).start()
+# vs = cv2.VideoCapture('run.mp4')
 time.sleep(2.0)
 
 # loop over the frames from the video stream
 while True:
 	# read the next frame from the video stream and resize it
-	frame = vs.read()
+	ret, frame = vs.read()
 	frame = imutils.resize(frame, width=400)
 
 	# if the frame dimensions are None, grab them
@@ -98,8 +100,13 @@ while True:
 						cv2.line(frame, (object_1[0], object_1[1]), (object_2[0], object_2[1]), (0, 255, 0), thickness=2, lineType=8)
 						D = dist.euclidean((xA, yA), (xB, yB))
 						(mX, mY) = midpoint((xA, yA), (xB, yB))
-						cv2.putText(frame, "{:.1f}in".format(D), (int(mX), int(mY - 10)),
-									cv2.FONT_HERSHEY_SIMPLEX, 0.55, (240, 0, 159), 2)
+						if D < 200.0:
+							cv2.putText(frame, "{:.1f}in".format(D), (int(mX), int(mY - 10)),
+										cv2.FONT_HERSHEY_SIMPLEX, 0.55, (255, 0, 0), 2)
+							#beep(sound=1)
+						else:
+							cv2.putText(frame, "{:.1f}in".format(D), (int(mX), int(mY - 10)),
+										cv2.FONT_HERSHEY_SIMPLEX, 0.55, (240, 0, 159), 2)
 					else:
 						break
 

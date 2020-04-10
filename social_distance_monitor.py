@@ -1,13 +1,8 @@
-# USAGE
-# python object_tracker.py --prototxt deploy.prototxt --model res10_300x300_ssd_iter_140000.caffemodel
-
-# import the necessary packages
-from pyimagesearch.centroidtracker import CentroidTracker
+from peopletracker import PeopleTracker
 from scipy.spatial import distance as dist
 from imutils.video import VideoStream
 from beepy import beep
 import numpy as np
-import argparse
 import imutils
 import time
 import cv2
@@ -18,34 +13,27 @@ channel = connection.channel()
 channel.queue_declare(queue='hello')
 close = 0
 objects_set = set()
+
+
 def alert():
 	beep(sound=1)
+
 
 def midpoint(ptA, ptB):
 	return ((ptA[0] + ptB[0]) * 0.5, (ptA[1] + ptB[1]) * 0.5)
 
-# construct the argument parse and parse the arguments
-ap = argparse.ArgumentParser()
-ap.add_argument("-p", "--prototxt", required=True,
-	help="path to Caffe 'deploy' prototxt file")
-ap.add_argument("-m", "--model", required=True,
-	help="path to Caffe pre-trained model")
-ap.add_argument("-c", "--confidence", type=float, default=0.5,
-	help="minimum probability to filter weak detections")
-args = vars(ap.parse_args())
 
 # initialize our centroid tracker and frame dimensions
-ct = CentroidTracker()
+pt = PeopleTracker()
 (H, W) = (None, None)
 
 # load our serialized model from disk
 print("[INFO] loading model...")
-net = cv2.dnn.readNetFromCaffe(args["prototxt"], args["model"])
+net = cv2.dnn.readNetFromCaffe('deploy.prototxt', 'res10_300x300_ssd_iter_140000.caffemodel')
 
 # initialize the video stream and allow the camera sensor to warmup
 print("[INFO] starting video stream...")
 vs = VideoStream(src=0).start()
-# vs = cv2.VideoCapture('run.mp4')
 time.sleep(2.0)
 
 # loop over the frames from the video stream
@@ -71,7 +59,7 @@ while True:
 	for i in range(0, detections.shape[2]):
 		# filter out weak detections by ensuring the predicted
 		# probability is greater than a minimum threshold
-		if detections[0, 0, i, 2] > args["confidence"]:
+		if detections[0, 0, i, 2] > 0.5:
 			# compute the (x, y)-coordinates of the bounding box for
 			# the object, then update the bounding box rectangles list
 			box = detections[0, 0, i, 3:7] * np.array([W, H, W, H])
@@ -85,7 +73,7 @@ while True:
 
 	# update our centroid tracker using the computed set of bounding
 	# box rectangles
-	objects = ct.update(rects)
+	objects = pt.update(rects)
 	# loop over the tracked objects
 	for (objectID, centroid) in objects.items():
 		# draw both the ID of the object and the centroid of the
@@ -132,7 +120,7 @@ while True:
 
 	people_count = len(objects)
 	height, width, channels = frame.shape
-	# print(height, width, people_count)
+
 	# show the output frame
 	cv2.imshow("Frame", frame)
 	key = cv2.waitKey(1) & 0xFF

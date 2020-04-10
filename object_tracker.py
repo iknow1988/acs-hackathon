@@ -3,12 +3,16 @@
 
 # import the necessary packages
 from pyimagesearch.centroidtracker import CentroidTracker
+from scipy.spatial import distance as dist
 from imutils.video import VideoStream
 import numpy as np
 import argparse
 import imutils
 import time
 import cv2
+
+def midpoint(ptA, ptB):
+	return ((ptA[0] + ptB[0]) * 0.5, (ptA[1] + ptB[1]) * 0.5)
 
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
@@ -71,7 +75,6 @@ while True:
 	# update our centroid tracker using the computed set of bounding
 	# box rectangles
 	objects = ct.update(rects)
-
 	# loop over the tracked objects
 	for (objectID, centroid) in objects.items():
 		# draw both the ID of the object and the centroid of the
@@ -80,6 +83,25 @@ while True:
 		cv2.putText(frame, text, (centroid[0] - 10, centroid[1] - 10),
 			cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 		cv2.circle(frame, (centroid[0], centroid[1]), 4, (0, 255, 0), -1)
+
+	if len(objects) > 1:
+		for i, (key_1, value_1) in enumerate(objects.items()):
+			for j, (key_2, value_2) in enumerate(objects.items()):
+				if i != j:
+					object_1 = value_1
+					object_2 = value_2
+					if (object_1 is not None) and (object_2 is not None):
+						xA = object_1[0]
+						yA = object_1[1]
+						xB = object_2[0]
+						yB = object_2[1]
+						cv2.line(frame, (object_1[0], object_1[1]), (object_2[0], object_2[1]), (0, 255, 0), thickness=2, lineType=8)
+						D = dist.euclidean((xA, yA), (xB, yB))
+						(mX, mY) = midpoint((xA, yA), (xB, yB))
+						cv2.putText(frame, "{:.1f}in".format(D), (int(mX), int(mY - 10)),
+									cv2.FONT_HERSHEY_SIMPLEX, 0.55, (240, 0, 159), 2)
+					else:
+						break
 
 	# show the output frame
 	cv2.imshow("Frame", frame)

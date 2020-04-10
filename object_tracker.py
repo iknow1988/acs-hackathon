@@ -42,7 +42,7 @@ time.sleep(2.0)
 # loop over the frames from the video stream
 while True:
 	# read the next frame from the video stream and resize it
-	ret, frame = vs.read()
+	frame = vs.read()
 	frame = imutils.resize(frame, width=400)
 
 	# if the frame dimensions are None, grab them
@@ -83,8 +83,8 @@ while True:
 		# object on the output frame
 		text = "ID {}".format(objectID)
 		cv2.putText(frame, text, (centroid[0] - 10, centroid[1] - 10),
-			cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-		cv2.circle(frame, (centroid[0], centroid[1]), 4, (0, 255, 0), -1)
+			cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
+		cv2.circle(frame, (centroid[0], centroid[1]), 2, (0, 255, 0), -1)
 
 	if len(objects) > 1:
 		for i, (key_1, value_1) in enumerate(objects.items()):
@@ -97,19 +97,25 @@ while True:
 						yA = object_1[1]
 						xB = object_2[0]
 						yB = object_2[1]
-						cv2.line(frame, (object_1[0], object_1[1]), (object_2[0], object_2[1]), (0, 255, 0), thickness=2, lineType=8)
 						D = dist.euclidean((xA, yA), (xB, yB))
 						(mX, mY) = midpoint((xA, yA), (xB, yB))
 						if D < 200.0:
+							cv2.line(frame, (object_1[0], object_1[1]), (object_2[0], object_2[1]), (139,0,0),
+									 thickness=1, lineType=8)
 							cv2.putText(frame, "{:.1f}in".format(D), (int(mX), int(mY - 10)),
-										cv2.FONT_HERSHEY_SIMPLEX, 0.55, (255, 0, 0), 2)
+										cv2.FONT_HERSHEY_SIMPLEX, 0.55, (139,0,0), 2)
 							#beep(sound=1)
 						else:
+							cv2.line(frame, (object_1[0], object_1[1]), (object_2[0], object_2[1]), (0, 255, 0),
+									 thickness=1, lineType=8)
 							cv2.putText(frame, "{:.1f}in".format(D), (int(mX), int(mY - 10)),
 										cv2.FONT_HERSHEY_SIMPLEX, 0.55, (240, 0, 159), 2)
 					else:
 						break
 
+	people_count = len(objects)
+	height, width, channels = frame.shape
+	print(height, width, people_count)
 	# show the output frame
 	cv2.imshow("Frame", frame)
 	key = cv2.waitKey(1) & 0xFF

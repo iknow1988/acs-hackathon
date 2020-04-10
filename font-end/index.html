@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" type="text/css" href="style.css">
+		<script src="script.js"></script>
+	</head>
+	<body>
+
+		<button class="tablink" onclick="openPage('Home', this, 'red')">Home</button>
+		<button class="tablink" onclick="openPage('Monitor', this, 'green')" id="defaultOpen">Monitor</button>
+		<button class="tablink" onclick="openPage('Dashboard', this, 'blue')">Dashboard</button>
+		<button class="tablink" onclick="openPage('About', this, 'orange')">About</button>
+
+		<div id="Home" class="tabcontent">
+		  <h3>Home</h3>
+		  <p>Home is where the heart is..</p>
+		</div>
+
+		<div id="Monitor" class="tabcontent">
+		  <h3>Monitor</h3>
+		  <p>Some Monitor this fine day!</p> 
+		  <table style="width:100%">
+			<tr>
+			  <td>
+				<video width="320" height="240" controls muted autoplay loop>
+					<source src="movie.mp4" type="video/mp4">
+				  Your browser does not support the video tag.
+				  </video>
+			  </td>
+			  <td>
+				<video width="320" height="240" controls muted autoplay loop>
+					<source src="movie.mp4" type="video/mp4">
+				  Your browser does not support the video tag.
+				  </video>
+			  </td>
+			  <td>
+				<video width="320" height="240" controls muted autoplay loop>
+					<source src="movie.mp4" type="video/mp4">
+				  Your browser does not support the video tag.
+				  </video>
+			  </td>
+			</tr>
+			<tr>
+				<td>
+				  <video width="320" height="240" controls muted autoplay loop>
+					  <source src="movie.mp4" type="video/mp4">
+					Your browser does not support the video tag.
+					</video>
+				</td>
+				<td>
+				  <video width="320" height="240" controls muted autoplay loop>
+					  <source src="movie.mp4" type="video/mp4">
+					Your browser does not support the video tag.
+					</video>
+				</td>
+				<td>
+				  <video width="320" height="240" controls muted autoplay loop>
+					  <source src="movie.mp4" type="video/mp4">
+					Your browser does not support the video tag.
+					</video>
+				</td>
+			  </tr>
+		  </table>
+		</div>
+
+		<div id="Dashboard" class="tabcontent">
+		  <h3>Dashboard</h3>
+		  <p>Get in touch, or swing by for a cup of coffee.</p>
+		</div>
+
+		<div id="About" class="tabcontent">
+		  <h3>About</h3>
+		  <p>Who we are and what we do.</p>
+		</div>
+   
+</body>
+	<script>
+		// Get the element with id="defaultOpen" and click on it
+		document.getElementById("defaultOpen").click();
+	</script>
+</html> 

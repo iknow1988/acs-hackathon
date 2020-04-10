@@ -9,7 +9,7 @@ channel.queue_declare(queue='hello')
 
 def callback(ch, method, properties, body):
     print(" [x] ALERT SOCIAL DISTANCE RULE BROKEN BY: %r" % body)
-    # beep(sound=1)
+    beep(sound = 1)
 
 channel.basic_consume(queue='hello',
                       auto_ack=True,

@@ -16,8 +16,8 @@ import pika
 connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
 channel = connection.channel()
 channel.queue_declare(queue='hello')
-close = False
-
+close = 0
+objects_set = set()
 def alert():
 	beep(sound=1)
 
@@ -108,27 +108,28 @@ while True:
 						yB = object_2[1]
 						D = dist.euclidean((xA, yA), (xB, yB))
 						(mX, mY) = midpoint((xA, yA), (xB, yB))
-						if D < 200.0:
+						if D < 150.0:
 							cv2.line(frame, (object_1[0], object_1[1]), (object_2[0], object_2[1]), (139,0,0),
 									 thickness=1, lineType=8)
 							cv2.putText(frame, "{:.1f}".format(D), (int(mX), int(mY - 10)),
 										cv2.FONT_HERSHEY_SIMPLEX, 0.55, (139,0,0), 2)
-							close = True
+
 							body_str = str(key_1) + "," + str(key_2)
-							channel.basic_publish(exchange='',
-												  routing_key='hello',
-												  body = body_str)
-							# print(" [x] Sent 'Hello World!'")
+							if(key_1 not in objects_set or key_2 not in objects_set):
+								channel.basic_publish(exchange='',
+													  routing_key='hello',
+													  body = body_str)
+								objects_set.add(key_1)
+								objects_set.add(key_2)
 						else:
 							cv2.line(frame, (object_1[0], object_1[1]), (object_2[0], object_2[1]), (0, 255, 0),
 									 thickness=1, lineType=8)
 							cv2.putText(frame, "{:.1f}".format(D), (int(mX), int(mY - 10)),
 										cv2.FONT_HERSHEY_SIMPLEX, 0.55, (240, 0, 159), 2)
-							close = False
+							objects_set.clear()
 					else:
 						break
-	# if close:
-	# 	alert()
+
 	people_count = len(objects)
 	height, width, channels = frame.shape
 	# print(height, width, people_count)

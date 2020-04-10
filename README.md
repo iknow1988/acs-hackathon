@@ -7,7 +7,8 @@ Proudly supporting the ACS ‘COVID19 Flatten the Curve Hackathon’ #flattenthe
 ### Running the Tracker
 - Run the monitor from cmd > python social_distance_monitor.py
 
-### Running the Notification System which sends ping automatically to stakeholders using queuing service
+### Running the Notification System 
+This notifcation system sends ping automatically when people are not adhering the rule of social distancing to stakeholders. This service is using RabbitMQ queuing service.
 - Run the notification system > python receive.py
 
 ### Front end

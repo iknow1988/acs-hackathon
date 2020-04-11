@@ -15,4 +15,4 @@ This notifcation system sends ping automatically when people are not adhering th
 - Front end -> https://iknow1988.github.io/
 
 ### YouTube Video
-[![Alt text](https://img.youtube.com/vi/VID/0.jpg)](https://www.youtube.com/watch?v=4EfsuRIsdkk&feature=youtu.be)
+[![#flattenthecurvehack : AI enabled Social Distance monitoring with Smart Notification](https://img.youtube.com/vi/VID/0.jpg)](https://www.youtube.com/watch?v=4EfsuRIsdkk&feature=youtu.be)
